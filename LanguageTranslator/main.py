@@ -1,7 +1,7 @@
 import http.client
 import json
 
-# Language index map
+# Language index mapping 
 language_map = {
     1: ('English', 'en'),
     2: ('French', 'fr'),
