@@ -10,15 +10,26 @@
         <h1>🌐 Language Translator</h1>
 
         <form id="translateForm" method="POST">
+            <!-- Persist the rtl hidden field if present -->
+            {% if request.form.get('rtl') %}
+                <input type="hidden" name="rtl" value="1">
+            {% endif %}
+
+            <!-- RTL toggle, re-checked if rtl was in the form -->
             <label>
-                <input type="checkbox" id="rtlToggle" onchange="updateDirection()"> RTL (Right‑to‑Left)
+                <input
+                    type="checkbox"
+                    id="rtlToggle"
+                    name="rtl"
+                    onchange="updateDirection()"
+                    {% if request.form.get('rtl') %}checked{% endif %}
+                > RTL (Right‑to‑Left)
             </label>
             <br><br>
 
             <textarea
                 name="text"
                 id="inputText"
-                dir="ltr"
                 placeholder="Enter text to translate..."
                 required
             >{{ request.form.text or '' }}</textarea>
@@ -43,7 +54,7 @@
                     onclick="copyText()"
                     title="Copy"
                 >📋</button>
-                <div class="output-box" id="translatedText" dir="{{ 'rtl' if request.form.get('rtl') else 'ltr' }}">
+                <div class="output-box" id="translatedText">
                     {{ translated_text }}
                 </div>
             </div>
@@ -51,37 +62,38 @@
     </div>
 
     <script>
-        // Keep track of RTL checkbox
+        // Run on load and whenever RTL toggle changes
         function updateDirection() {
             const isRTL = document.getElementById("rtlToggle").checked;
-            const dir = isRTL ? 'rtl' : 'ltr';
-            document.getElementById("inputText").setAttribute('dir', dir);
+            const dir = isRTL ? "rtl" : "ltr";
+
+            // Input box direction & alignment
+            const input = document.getElementById("inputText");
+            input.setAttribute("dir", dir);
+            input.style.textAlign = isRTL ? "right" : "left";
+
+            // Translated output direction & alignment
+            const output = document.getElementById("translatedText");
+            if (output) {
+                output.setAttribute("dir", dir);
+                output.style.textAlign = isRTL ? "right" : "left";
+            }
         }
 
-        // On form submit, if RTL is on, reverse each word and word order
+        // Auto-reverse on submit (if needed)
         document.getElementById("translateForm").addEventListener("submit", function(e) {
             const rtlToggle = document.getElementById("rtlToggle");
+            const input = document.getElementById("inputText");
             if (rtlToggle.checked) {
-                const textarea = document.getElementById("inputText");
-                const words = textarea.value.split(' ');
-                const reversed = words
+                const words = input.value.trim().split(/\s+/);
+                input.value = words
                     .map(w => w.split('').reverse().join(''))
                     .reverse()
                     .join(' ');
-                textarea.value = reversed;
-                // add a hidden field so Flask knows RTL was checked, if you need it server‑side:
-                let rtlField = document.querySelector('input[name="rtl"]');
-                if (!rtlField) {
-                    rtlField = document.createElement('input');
-                    rtlField.type = 'hidden';
-                    rtlField.name = 'rtl';
-                    document.getElementById("translateForm").appendChild(rtlField);
-                }
-                rtlField.value = '1';
             }
         });
 
-        // Copy button logic
+        // Copy-to-clipboard
         function copyText() {
             const text = document.getElementById("translatedText").innerText;
             const btn = document.getElementById("copyBtn");
@@ -94,6 +106,9 @@
                 }, 2000);
             });
         }
+
+        // Initialize directions on page load
+        document.addEventListener("DOMContentLoaded", updateDirection);
     </script>
 </body>
 </html>
