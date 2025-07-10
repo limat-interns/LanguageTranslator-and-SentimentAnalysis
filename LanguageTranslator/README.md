@@ -62,25 +62,41 @@ http://127.0.0.1:5000
 
 ---
 
-## 📸 Screenshots
-
-| Input Area | Translated Output |
-|------------|-------------------|
-| ![input](https://via.placeholder.com/200x100?text=Input+Text) | ![output](https://via.placeholder.com/200x100?text=Translated+Text) |
-
----
-
 ## 🌐 Supported Languages
 
-| Language | Code |
-|----------|------|
-| English  | `en` |
-| Arabic   | `ar` |
-| Hebrew   | `he` |
-| Urdu     | `ur` |
-| French   | `fr` |
-| Spanish  | `es` |
-| ... Add more as needed |
+| Language             | Code |
+| -------------------- | ---- |
+| English              | `en` |
+| French               | `fr` |
+| Spanish              | `es` |
+| German               | `de` |
+| Italian              | `it` |
+| Portuguese           | `pt` |
+| Russian              | `ru` |
+| Chinese (Simplified) | `zh` |
+| Japanese             | `ja` |
+| Korean               | `ko` |
+| Hindi                | `hi` |
+| Tamil                | `ta` |
+| Telugu               | `te` |
+| Bengali              | `bn` |
+| Gujarati             | `gu` |
+| Kannada              | `kn` |
+| Malayalam            | `ml` |
+| Marathi              | `mr` |
+| Punjabi              | `pa` |
+| Urdu                 | `ur` |
+| Arabic               | `ar` |
+| Turkish              | `tr` |
+| Vietnamese           | `vi` |
+| Thai                 | `th` |
+| Dutch                | `nl` |
+| Greek                | `el` |
+| Hebrew               | `iw` |
+| Polish               | `pl` |
+| Ukrainian            | `uk` |
+| Romanian             | `ro` |
+
 
 ---
 
