@@ -8,48 +8,107 @@
 <body>
     <div class="container">
         <h1>🌐 Language Translator</h1>
-        <form method="POST">
-            <textarea name="text" placeholder="Enter text to translate..." required>{{ request.form.text or '' }}</textarea>
-            <select name="language" required>
+
+        <form id="translateForm" method="POST">
+            <!-- Persist the rtl hidden field if present -->
+            {% if request.form.get('rtl') %}
+                <input type="hidden" name="rtl" value="1">
+            {% endif %}
+
+            <!-- RTL toggle, re-checked if rtl was in the form -->
+            <label>
+                <input
+                    type="checkbox"
+                    id="rtlToggle"
+                    name="rtl"
+                    onchange="updateDirection()"
+                    {% if request.form.get('rtl') %}checked{% endif %}
+                > RTL (Right‑to‑Left)
+            </label>
+            <br><br>
+
+            <textarea
+                name="text"
+                id="inputText"
+                placeholder="Enter text to translate..."
+                required
+            >{{ request.form.text or '' }}</textarea>
+            
+            <select name="language" required onchange="updateDirection()">
                 {% for key, (lang, code) in language_map.items() %}
                     <option value="{{ code }}" {% if request.form.language == code %}selected{% endif %}>
                         {{ lang }} ({{ code }})
                     </option>
                 {% endfor %}
             </select>
+            
             <button type="submit">Translate</button>
         </form>
 
         {% if translated_text %}
             <h2>Translated Text:</h2>
             <div class="output-wrapper">
-                <button id="copyBtn" class="copy-icon-btn" onclick="copyText()" title="Copy">
-                    📋
-                </button>
-                <div class="output-box" id="translatedText">{{ translated_text }}</div>
+                <button
+                    id="copyBtn"
+                    class="copy-icon-btn"
+                    onclick="copyText()"
+                    title="Copy"
+                >📋</button>
+                <div class="output-box" id="translatedText">
+                    {{ translated_text }}
+                </div>
             </div>
         {% endif %}
-
-        <script>
-            function copyText() {
-                const text = document.getElementById("translatedText").innerText;
-                const btn = document.getElementById("copyBtn");
-                navigator.clipboard.writeText(text).then(function () {
-                    // Change icon to tick
-                    btn.innerText = "✔️";
-                    // Optional: change tooltip
-                    btn.title = "Copied!";
-
-                    // Revert back after 2 seconds
-                    setTimeout(() => {
-                        btn.innerText = "📋";
-                        btn.title = "Copy";
-                    }, 2000);
-                });
-            }
-        </script>
-
-
     </div>
+
+    <script>
+        // Run on load and whenever RTL toggle changes
+        function updateDirection() {
+            const isRTL = document.getElementById("rtlToggle").checked;
+            const dir = isRTL ? "rtl" : "ltr";
+
+            // Input box direction & alignment
+            const input = document.getElementById("inputText");
+            input.setAttribute("dir", dir);
+            input.style.textAlign = isRTL ? "right" : "left";
+
+            // Translated output direction & alignment
+            const output = document.getElementById("translatedText");
+            if (output) {
+                output.setAttribute("dir", dir);
+                output.style.textAlign = isRTL ? "right" : "left";
+            }
+        }
+
+        // Auto-reverse on submit (if needed)
+        document.getElementById("translateForm").addEventListener("submit", function(e) {
+            const rtlToggle = document.getElementById("rtlToggle");
+            const input = document.getElementById("inputText");
+            if (rtlToggle.checked) {
+                const words = input.value.trim().split(/\s+/);
+                input.value = words
+                    .map(w => w.split('').reverse().join(''))
+                    .reverse()
+                    .join(' ');
+            }
+        });
+
+        // Copy-to-clipboard
+        function copyText() {
+            const text = document.getElementById("translatedText").innerText;
+            const btn = document.getElementById("copyBtn");
+            navigator.clipboard.writeText(text).then(() => {
+                btn.innerText = "✔️";
+                btn.title = "Copied!";
+                setTimeout(() => {
+                    btn.innerText = "📋";
+                    btn.title = "Copy";
+                }, 2000);
+            });
+        }
+
+        // Initialize directions on page load
+        document.addEventListener("DOMContentLoaded", updateDirection);
+    </script>
 </body>
 </html>
