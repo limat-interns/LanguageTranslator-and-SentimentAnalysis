@@ -100,15 +100,6 @@ http://127.0.0.1:5000
 
 ---
 
-## ✅ TODO
-
-- [ ] Language auto-detection toggle
-- [ ] Voice input and output
-- [ ] Language history & recent translations
-- [ ] Better RTL font styling
-
----
-
 ## 👨‍💻 Author
 
 **Ganesh Arihanth**
