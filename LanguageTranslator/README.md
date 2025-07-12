@@ -112,3 +112,5 @@ http://127.0.0.1:5000
 
 This project is licensed under the **MIT License**.  
 Feel free to use, modify, and distribute.
+
+---
